@@ -584,12 +584,27 @@
             font-size: 0.85rem;
         }
 
-        /* 字體縮放支援 */
-        body.font-large .contract-paper {
-            font-size: 1.15em;
+        /* 字體縮放支援（調整 root html font-size，使全頁 rem 元素極致有感縮放） */
+        html {
+            font-size: 16px;
+            transition: font-size 0.25s ease;
         }
-        body.font-xlarge .contract-paper {
-            font-size: 1.3em;
+        html[data-font-size="large"] {
+            font-size: 21px; /* 放大約 130% */
+        }
+        html[data-font-size="xlarge"] {
+            font-size: 26px; /* 放大約 165% (極致大字友善) */
+        }
+
+        /* 導覽列文字保持適中，避免在特大字時爆版 */
+        .top-navbar {
+            font-size: 15px;
+        }
+        .top-navbar .brand-title {
+            font-size: 16px;
+        }
+        .top-navbar .action-btn {
+            font-size: 13px;
         }
 
         /* 列印最佳化樣式 */
@@ -994,20 +1009,20 @@
 
     <script>
         // 字體大小切換
-        let fontLevel = 0; // 0: 正常, 1: 大字, 2: 特大字
+        let fontLevel = 0; // 0: 正常 (16px), 1: 大字 (21px), 2: 特大字 (26px)
         function toggleFontSize() {
             fontLevel = (fontLevel + 1) % 3;
-            const body = document.body;
+            const html = document.documentElement;
             const btnText = document.getElementById('fontBtnText');
             
-            body.classList.remove('font-large', 'font-xlarge');
             if (fontLevel === 1) {
-                body.classList.add('font-large');
-                btnText.innerText = '字級：大字';
+                html.setAttribute('data-font-size', 'large');
+                btnText.innerText = '字級：大字 (130%)';
             } else if (fontLevel === 2) {
-                body.classList.add('font-xlarge');
-                btnText.innerText = '字級：特大';
+                html.setAttribute('data-font-size', 'xlarge');
+                btnText.innerText = '字級：特大 (165%)';
             } else {
+                html.removeAttribute('data-font-size');
                 btnText.innerText = '字級：正常';
             }
         }
